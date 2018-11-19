@@ -92,10 +92,7 @@ def main():
     # See GitLab web page for more information
     # https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
     #
-    #
-    # TOKEN = "FDUEDUV9gNe611ax431K"
-    # curl http://gitlab.lancer-ins.com/-/readiness?token=FDUEDUV9gNe611ax431K
-
+    
     TOKEN_PROVIDED = (args.token)
 
     EXTENDED = (args.extended)
