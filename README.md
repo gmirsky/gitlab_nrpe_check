@@ -1,2 +1,36 @@
-# gitlab_nrpe_check
-GitLab NRPE Python Plugin
+#GitLab NRPE Check Plugin
+
+gitlab_nrpe_check.py
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -H HOST, --host HOST  Hostname of the Gitlab server
+  -t TOKEN, --token TOKEN
+                        User token for the Gitlab server
+  -x, --extended        Add extended information when possible
+
+
+Note:  token is deprecated by GitLab as of version 9.4 but this plugin supports it as input for compatibility. See the GitLab web page for more information about whitelisting your monitoring server:
+
+    https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
+
+save this script in /usr/lib64/nagios/plugins/gitlab_nrpe_check.py and make it executable:
+
+    chmod +x /usr/lib64/nagios/plugins/gitlab_nrpe_check.py
+
+add
+
+    command[gitlab_check]=/usr/lib64/nagios/plugins/gitlab_nrpe_check.py
+
+
+Make sure to restart Nagios NRPE service:
+
+    service nrpe restart
+
+
+Define new command in /etc/nagios/objects/commands.cfg
+
+    define command{
+            command_name    gitlab_check
+            command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c gitlab_check
+            }

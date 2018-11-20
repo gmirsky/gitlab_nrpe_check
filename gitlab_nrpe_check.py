@@ -32,10 +32,13 @@ def get_jsonparsed_data(url):
     try:
         URL_REQUEST = urllib2.Request(url)
         RESPONSE = urllib2.urlopen(URL_REQUEST)
+
     except urllib2.URLError as e:
         exit_gracefully(NAGIOS_UNKNOWN_EXIT_CODE,
                         e.reason)
+
     data = RESPONSE.read().decode("utf-8")
+
     return json.loads(data)
 
 
@@ -65,34 +68,28 @@ def exit_gracefully(exitcode, message=''):
 def main():
     """ Main routine """
 
-    parser = argparse.ArgumentParser(description='GitLab NRPE Check')
+    parser = argparse.ArgumentParser(description='GitLab NRPE Check Plugin')
     #
     parser.add_argument('-H',
                         '--host',
-                        help='Hostname of the Gitlab server',
+                        help='Hostname or IP address of the Gitlab server.',
                         required=True)
 
     parser.add_argument('-t',
                         '--token',
-                        help='User token for the Gitlab server',
+                        help='User token for the Gitlab server \
+                        (deprecated in Gitlab 9.4 in favor of whitelisting).',
                         default='')
 
     parser.add_argument('-x',
                         '--extended',
-                        help='Add extended information when possible',
+                        help='Provide extended output, when possible.',
                         action='store_true')
 
     args = parser.parse_args()
 
     base_url = 'http://{}'.format(args.host)
 
-    # token is deprecated by GitLab but this plugin supports it as input
-    # for compatibility.
-    #
-    # See GitLab web page for more information
-    # https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
-    #
-    
     TOKEN_PROVIDED = (args.token)
 
     EXTENDED = (args.extended)
@@ -216,7 +213,6 @@ def main():
         exit_gracefully(NAGIOS_CRITICAL_EXIT_CODE,
                         ERROR_MESSAGE)
 
-    # All is good so exit with a zero return code
     if EXTENDED:
         ERROR_MESSAGE = ("all checks are ok" +
                          "\n" +
