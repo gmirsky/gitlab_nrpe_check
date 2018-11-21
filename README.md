@@ -22,19 +22,33 @@ Place this script in /usr/lib64/nagios/plugins/gitlab_nrpe_check.py and make it 
 chmod +x /usr/lib64/nagios/plugins/gitlab_nrpe_check.py
 ```
 
-add
+add the following to /etc/nagios/nrpe.cfg
 
-    command[gitlab_check]=/usr/lib64/nagios/plugins/gitlab_nrpe_check.py
+    command[gitlab_nrpe_check]=/usr/lib64/nagios/plugins/gitlab_nrpe_check.py -H <<<your server ip>>>
 
+The above assumes that you whitelisted the server to itself. If not, then use the Gitlab token
+
+    command[gitlab_nrpe_check]=/usr/lib64/nagios/plugins/gitlab_nrpe_check.py -H <<<your server ip>>> -t <<<your gitlab token>>>
 
 Make sure to restart Nagios NRPE service:
 
     systemctl restart nrpe
 
+Don't foreget to check the status of NRPE too!
 
-Define new command in /etc/nagios/objects/commands.cfg
+    systemctl status nrpe
 
-    define command{
-            command_name    gitlab_check
-            command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c gitlab_check
-            }
+Define new command in your nagios/naemon commands.cfg file on your monitoring server.
+
+    define command {
+      command_name                   gitlab_nrpe_check
+      command_line                   $USER1$/plugins3party/gitlab_nrpe_check.py -H $HOSTADDRESS$
+    }
+
+    define service {
+      service_description            gitlab_nrpe_check
+      host_name                      pv-git
+      use                            generic-service
+      check_command                  gitlab_nrpe_check
+      contact_groups                 admins
+    }
