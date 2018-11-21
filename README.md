@@ -22,7 +22,9 @@ Place this script in /usr/lib64/nagios/plugins/gitlab_nrpe_check.py and make it 
 chmod +x /usr/lib64/nagios/plugins/gitlab_nrpe_check.py
 ```
 
-add the following to /etc/nagios/nrpe.cfg
+On your monitoring server you need to place this file also in the plugins3party directory. On my server it was /etc/lib64/nagios/plugins/plugins3party and make it executable just like you did on the target sever above.
+
+Then add the following to /etc/nagios/nrpe.cfg
 
     command[gitlab_nrpe_check]=/usr/lib64/nagios/plugins/gitlab_nrpe_check.py -H <<<your server ip>>>
 
